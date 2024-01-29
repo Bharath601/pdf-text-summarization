@@ -1,0 +1,114 @@
+import React, { useState,useRef } from 'react';
+import axios from 'axios';
+import './ChatInterface.css';
+import { useNavigate } from 'react-router-dom';
+import { MdAttachFile } from 'react-icons/md'; 
+import { MdAndroid } from 'react-icons/md';
+import { MdPerson } from 'react-icons/md';
+const ChatInterface = () => {
+    const [inputText, setInputText] = useState('');
+    const [messages, setMessages] = useState([{ text: "Give  text Or  PDF  for summarization ", sender: 'bot' }]);
+    const [show,setShow] = useState(false)
+    const textAreaRef = useRef(null);
+    const navigate = useNavigate(); 
+    const handleTextAreaChange = (e) => {
+        setInputText(e.target.value);
+        textAreaRef.current.style.height = 'inherit'; // Reset height to recalculate
+        textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`; // Set new height based on content
+    };
+
+    
+    const addMessage = (text, sender) => {
+        setMessages(messages => [...messages, { text, sender }]);
+    };
+
+    const processInput = async (formData, isPDF = false) => {
+        addMessage('Processing, please wait...', 'bot');
+        const endpoint = isPDF ? 'http://127.0.0.1:5000/summarize-pdf' : 'http://127.0.0.1:5000/summarize';
+    
+        try {
+            const response = await axios.post(endpoint, formData, {
+                headers: {
+                    'Content-Type': isPDF ? 'multipart/form-data' : 'application/json',
+                },
+            });
+            console.log("Received from Server:", response.data.summary); // Confirm summary is received
+            addMessage(response.data.summary, 'bot');
+        } catch (error) {
+            console.error('Processing error:', error);
+            addMessage('Failed to process the input.', 'bot');
+        }
+    };
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/pdf') {
+            const formData = new FormData();
+
+            formData.append('file', file);
+            processInput(formData, true);
+        } else {
+            addMessage('Please upload a valid PDF file.', 'bot');
+        }
+    };
+    
+    const handleSendClick = async () => {
+        
+        const handleButtoClick = () => {
+            navigate('/chatbot'); 
+          };
+    if (inputText.trim()) {
+        addMessage(inputText, 'user'); // Show user's message in the chat
+
+        
+            const dataToSummarize = { text: inputText.trim() };
+            processInput(dataToSummarize, false); // false indicates it's not a PDF
+                
+                
+        
+        setInputText(''); // Clear the input after sending the message
+    } else {
+        addMessage('Please provide some text to summarize or upload a PDF.', 'bot');
+    }
+};
+
+
+    return (
+        <div className="chat-container">
+            <h1 className="text-summarization-heading">Text Summarization</h1>
+            <div className="messages">
+            {messages.map((msg, index) => (
+    <div key={index} className={`message ${msg.sender} ${msg.type === 'pdfResponse' ? 'pdf-response' : ''}`}>
+        {/* Conditionally render icons */}
+        {msg.sender === 'bot' && <MdAndroid className="icon" size="1.5em" />}
+        {msg.sender === 'user' && <MdPerson className="icon" size="1.5em" />}
+        {msg.text}
+    </div>
+))}
+            </div>
+            <div className='talk_to_bot'>
+            <button className="start-bot-btn" onClick={handleButtoClick}>Talk to bot</button>
+            </div>
+            <div className="input-area">
+            <textarea
+                    ref={textAreaRef}
+                    className="input-textarea"
+                    value={inputText}
+                    onChange={handleTextAreaChange}
+                    placeholder="Type your text here..."
+                />
+                <label className="file-input-label">
+                    <MdAttachFile size="2.5em" />
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                    />
+                </label>
+                <button onClick={handleSendClick}>Summarize Text</button>
+            </div>
+        </div>
+    );
+};
+
+export default ChatInterface;

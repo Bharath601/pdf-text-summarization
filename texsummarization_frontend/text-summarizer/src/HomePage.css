@@ -1,0 +1,72 @@
+/* HomePage.css */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    background-color: #121212; /* Dark theme background */
+    text-align: center;
+    padding: 20px;
+}
+
+.home-container h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5em;
+    color: #4caf50; /* Theme accent color */
+}
+
+.home-container p {
+    font-size: 1.25rem;
+    margin-bottom: 2em;
+    color: #cfd8dc; /* Light grey text for better readability */
+    max-width: 600px; /* Set a max-width for optimal reading experience */
+}
+
+.start-summarizing-btn, .start-bot-btn {
+    padding: 1em 1.5em;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #121212; /* Dark text for the button */
+    background-color: #4caf50; /* Theme accent color */
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.start-summarizing-btn:hover, .start-summarizing-btn:focus{
+    background-color: #4caf50; /* Lighter shade for hover effect */
+    transform: scale(1.05); /* Slightly increase size for hover effect */
+    outline: none; /* Remove outline on focus for cleaner appearance */
+}
+.start-bot-btn:hover, .start-bot-btn:focus {
+    background-color: #2196f3; /* Lighter shade for hover effect */
+    transform: scale(1.05); /* Slightly increase size for hover effect */
+    outline: none; /* Remove outline on focus for cleaner appearance */
+}
+
+.start-bot-btn {
+    background-color: #2196f3; /* Blue color for the button */
+    width: 60%; /* Wider than the start button */
+    max-width: 170px;
+    margin-top: 20px;  /* Maximum width to keep it reasonable on larger screens */
+}
+
+/* Add some responsive tweaks if necessary */
+@media (max-width: 768px) {
+    .home-container h1 {
+        font-size: 2.5rem;
+    }
+
+    .home-container p {
+        font-size: 1rem;
+    }
+
+    .start-summarizing-btn, .start-bot-btn {
+        font-size: 1rem;
+        padding: 0.75em 1em; /* Slightly smaller padding on mobile */
+    }
+}
